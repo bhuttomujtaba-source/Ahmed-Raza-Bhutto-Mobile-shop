@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ahmed Raza Bhutto Mobile Shop | Best Mobiles in Pakistan</title>
+  <meta name="description" content="Ahmed Raza Bhutto Mobile Shop – Latest smartphones at best prices. Online order facility. Owner: Ahmed Raza Bhutto." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="container nav-container">
+      <a href="#home" class="logo">
+        <span class="logo-icon">📱</span>
+        <div>
+          <h1>Ahmed Raza Bhutto</h1>
+          <p>Mobile Shop</p>
+        </div>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="#home">Home</a>
+        <a href="#products">Mobiles</a>
+        <a href="#facilities">Facilities</a>
+        <a href="#order">Online Order</a>
+        <a href="#about">About Owner</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <!-- ========== HERO ========== -->
+  <section class="hero" id="home">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <h2>Welcome to <span>Ahmed Raza Bhutto</span> Mobile Shop</h2>
+        <p>Latest smartphones • Best prices in Pakistan • 100% Genuine • Online Order Facility</p>
+        <div class="hero-buttons">
+          <a href="#products" class="btn btn-primary">View Mobiles</a>
+          <a href="#order" class="btn btn-outline">Order Online</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="phone-stack">
+          <div class="phone-mock">📱</div>
+          <div class="phone-mock">📲</div>
+          <div class="phone-mock">📱</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FACILITIES ========== -->
+  <section class="facilities" id="facilities">
+    <div class="container">
+      <h2 class="section-title">Our Facilities</h2>
+      <p class="section-subtitle">Everything you need in one place</p>
+      <div class="facilities-grid">
+        <div class="facility-card">
+          <div class="facility-icon">🛒</div>
+          <h3>Online Order</h3>
+          <p>Order any mobile from home with fast delivery across Pakistan.</p>
+        </div>
+        <div class="facility-card">
+          <div class="facility-icon">💰</div>
+          <h3>Best Prices</h3>
+          <p>Competitive rates on Samsung, Xiaomi, Infinix, Tecno, iPhone & more.</p>
+        </div>
+        <div class="facility-card">
+          <div class="facility-icon">✅</div>
+          <h3>Genuine Products</h3>
+          <p>100% original mobiles with official company warranty.</p>
+        </div>
+        <div class="facility-card">
+          <div class="facility-icon">🔧</div>
+          <h3>Repair Service</h3>
+          <p>Expert mobile repairing available at our shop.</p>
+        </div>
+        <div class="facility-card">
+          <div class="facility-icon">📦</div>
+          <h3>Accessories</h3>
+          <p>Cases, chargers, earbuds, power banks and more.</p>
+        </div>
+        <div class="facility-card">
+          <div class="facility-icon">💳</div>
+          <h3>Easy Payment</h3>
+          <p>Cash, JazzCash, Easypaisa and Bank Transfer accepted.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== PRODUCTS ========== -->
+  <section class="products" id="products">
+    <div class="container">
+      <h2 class="section-title">Our Mobiles</h2>
+      <p class="section-subtitle">Latest smartphones with photos & realistic Pakistani prices</p>
+
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="samsung">Samsung</button>
+        <button class="filter-btn" data-filter="xiaomi">Xiaomi</button>
+        <button class="filter-btn" data-filter="infinix">Infinix</button>
+        <button class="filter-btn" data-filter="tecno">Tecno</button>
+        <button class="filter-btn" data-filter="iphone">iPhone</button>
+      </div>
+
+      <div class="products-grid" id="productsGrid">
+        <!-- Injected by JavaScript -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ONLINE ORDER ========== -->
+  <section class="order-section" id="order">
+    <div class="container">
+      <h2 class="section-title">Online Order</h2>
+      <p class="section-subtitle">Fill the form and we will contact you shortly</p>
+
+      <form class="order-form" id="orderForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="customerName">Full Name *</label>
+            <input type="text" id="customerName" name="name" required placeholder="Your full name" />
+          </div>
+          <div class="form-group">
+            <label for="customerPhone">Phone Number *</label>
+            <input type="tel" id="customerPhone" name="phone" required placeholder="03XX-XXXXXXX" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="customerCity">City *</label>
+            <input type="text" id="customerCity" name="city" required placeholder="e.g. Karachi, Lahore, Islamabad" />
+          </div>
+          <div class="form-group">
+            <label for="mobileModel">Mobile Model *</label>
+            <select id="mobileModel" name="model" required>
+              <option value="">Select Mobile</option>
+              <option value="Samsung Galaxy A16">Samsung Galaxy A16</option>
+              <option value="Samsung Galaxy A36">Samsung Galaxy A36</option>
+              <option value="Samsung Galaxy S24">Samsung Galaxy S24</option>
+              <option value="Samsung Galaxy A06">Samsung Galaxy A06</option>
+              <option value="Xiaomi Redmi Note 14">Xiaomi Redmi Note 14</option>
+              <option value="Xiaomi 14T">Xiaomi 14T</option>
+              <option value="Infinix Note 40">Infinix Note 40</option>
+              <option value="Infinix Hot 50">Infinix Hot 50</option>
+              <option value="Tecno Spark 30">Tecno Spark 30</option>
+              <option value="Tecno Camon 30">Tecno Camon 30</option>
+              <option value="iPhone 15">iPhone 15</option>
+              <option value="iPhone 16">iPhone 16</option>
+              <option value="Other">Other (write in notes)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="address">Delivery Address *</label>
+          <textarea id="address" name="address" rows="3" required placeholder="Full delivery address"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="notes">Additional Notes</label>
+          <textarea id="notes" name="notes" rows="2" placeholder="Color, storage variant, any special request..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full">Submit Order Request</button>
+      </form>
+
+      <div class="order-success" id="orderSuccess" hidden>
+        <h3>✅ Order Request Received!</h3>
+        <p id="successMessage"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== ABOUT OWNER ========== -->
+  <section class="about" id="about">
+    <div class="container about-content">
+      <div class="about-text">
+        <h2 class="section-title left">About the Owner</h2>
+        <h3>Ahmed Raza Bhutto</h3>
+        <p>
+          Welcome to my mobile shop! I am <strong>Ahmed Raza Bhutto</strong>, the proud owner of this store.
+          We are committed to providing genuine smartphones at the most competitive prices in Pakistan.
+        </p>
+        <p>
+          Whether you want the latest flagship or a budget-friendly phone, we have a wide range of options.
+          We also offer online ordering so you can shop from the comfort of your home.
+        </p>
+        <p>
+          Customer satisfaction is our top priority. Visit us or place an online order today!
+        </p>
+        <div class="owner-badge">
+          <span>Owner & Founder</span>
+          <strong>Ahmed Raza Bhutto</strong>
+        </div>
+      </div>
+      <div class="about-image">
+        <div class="owner-avatar">ARB</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CONTACT ========== -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <h2 class="section-title">Contact Us</h2>
+      <div class="contact-grid">
+        <div class="contact-card">
+          <div class="contact-icon">📍</div>
+          <h3>Visit Our Shop</h3>
+          <p>Come to our store to see and buy mobiles in person.</p>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">📞</div>
+          <h3>Call / WhatsApp</h3>
+          <p>For prices & orders</p>
+          <a href="tel:+923001234567" class="contact-link">+92 300 1234567</a>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">✉️</div>
+          <h3>Email</h3>
+          <p>For online inquiries</p>
+          <a href="mailto:ahmedraza@bhuttomobiles.com" class="contact-link">ahmedraza@bhuttomobiles.com</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <h3>Ahmed Raza Bhutto Mobile Shop</h3>
+          <p>Your trusted mobile partner in Pakistan</p>
+        </div>
+        <div class="footer-links">
+          <a href="#home">Home</a>
+          <a href="#products">Mobiles</a>
+          <a href="#order">Online Order</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Ahmed Raza Bhutto Mobile Shop. All rights reserved.</p>
+        <p>Owner: <strong>Ahmed Raza Bhutto</strong></p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
