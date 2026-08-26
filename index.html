@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ahmed Raza Bhutto Mobile Shop | Best Mobiles in Pakistan</title>
-  <meta name="description" content="Ahmed Raza Bhutto Mobile Shop – Latest smartphones at best prices. Online order facility. Owner: Ahmed Raza Bhutto." />
+  <meta name="description" content="Ahmed Raza Bhutto Mobile Shop – Latest smartphones at best prices. Online order facility. Owner: Ahmed Raza Bhutto. WhatsApp: 03318373204" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -29,7 +29,10 @@
         <a href="#about">About Owner</a>
         <a href="#contact">Contact</a>
       </nav>
-      <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+      <div class="header-actions">
+        <a href="https://wa.me/923318373204" class="whatsapp-header" target="_blank" rel="noopener" title="WhatsApp">💬 WhatsApp</a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+      </div>
     </div>
   </header>
 
@@ -38,10 +41,11 @@
     <div class="container hero-content">
       <div class="hero-text">
         <h2>Welcome to <span>Ahmed Raza Bhutto</span> Mobile Shop</h2>
-        <p>Latest smartphones • Best prices in Pakistan • 100% Genuine • Online Order Facility</p>
+        <p>Latest smartphones • Best prices in Pakistan • 100% Genuine • Online Order Facility • Free Delivery on selected cities</p>
         <div class="hero-buttons">
           <a href="#products" class="btn btn-primary">View Mobiles</a>
           <a href="#order" class="btn btn-outline">Order Online</a>
+          <a href="https://wa.me/923318373204?text=Assalam%20o%20Alaikum%2C%20I%20want%20to%20buy%20a%20mobile" class="btn btn-whatsapp" target="_blank" rel="noopener">💬 Chat on WhatsApp</a>
         </div>
       </div>
       <div class="hero-visual">
@@ -63,7 +67,7 @@
         <div class="facility-card">
           <div class="facility-icon">🛒</div>
           <h3>Online Order</h3>
-          <p>Order any mobile from home with fast delivery across Pakistan.</p>
+          <p>Order any mobile from home with fast delivery across Pakistan. Detailed form available.</p>
         </div>
         <div class="facility-card">
           <div class="facility-icon">💰</div>
@@ -73,7 +77,7 @@
         <div class="facility-card">
           <div class="facility-icon">✅</div>
           <h3>Genuine Products</h3>
-          <p>100% original mobiles with official company warranty.</p>
+          <p>100% original mobiles with official company warranty & PTA approved.</p>
         </div>
         <div class="facility-card">
           <div class="facility-icon">🔧</div>
@@ -88,7 +92,17 @@
         <div class="facility-card">
           <div class="facility-icon">💳</div>
           <h3>Easy Payment</h3>
-          <p>Cash, JazzCash, Easypaisa and Bank Transfer accepted.</p>
+          <p>Cash, JazzCash, Easypaisa, Bank Transfer & COD accepted.</p>
+        </div>
+        <div class="facility-card">
+          <div class="facility-icon">🚚</div>
+          <h3>Fast Delivery</h3>
+          <p>Same-day / next-day delivery in major cities. Nationwide shipping.</p>
+        </div>
+        <div class="facility-card">
+          <div class="facility-icon">💬</div>
+          <h3>WhatsApp Support</h3>
+          <p>Instant replies on WhatsApp 0331-8373204 for prices & orders.</p>
         </div>
       </div>
     </div>
@@ -98,7 +112,11 @@
   <section class="products" id="products">
     <div class="container">
       <h2 class="section-title">Our Mobiles</h2>
-      <p class="section-subtitle">Latest smartphones with photos & realistic Pakistani prices</p>
+      <p class="section-subtitle">Latest smartphones with photos, specs & realistic Pakistani prices</p>
+
+      <div class="search-bar-wrap">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search mobile by name, brand or price..." />
+      </div>
 
       <div class="filter-bar">
         <button class="filter-btn active" data-filter="all">All</button>
@@ -107,6 +125,7 @@
         <button class="filter-btn" data-filter="infinix">Infinix</button>
         <button class="filter-btn" data-filter="tecno">Tecno</button>
         <button class="filter-btn" data-filter="iphone">iPhone</button>
+        <button class="filter-btn" data-filter="budget">Under 50k</button>
       </div>
 
       <div class="products-grid" id="productsGrid">
@@ -115,62 +134,128 @@
     </div>
   </section>
 
+  <!-- ========== PRODUCT MODAL ========== -->
+  <div class="modal-overlay" id="productModal" hidden>
+    <div class="modal">
+      <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
   <!-- ========== ONLINE ORDER ========== -->
   <section class="order-section" id="order">
     <div class="container">
       <h2 class="section-title">Online Order</h2>
-      <p class="section-subtitle">Fill the form and we will contact you shortly</p>
+      <p class="section-subtitle">Fill the detailed form — we will contact you on WhatsApp/Call shortly. Or order directly via WhatsApp.</p>
+
+      <div class="order-quick-wa">
+        <a href="https://wa.me/923318373204?text=Assalam%20o%20Alaikum%2C%20I%20want%20to%20place%20an%20order" class="btn btn-whatsapp btn-lg" target="_blank" rel="noopener">
+          💬 Order Directly on WhatsApp (0331-8373204)
+        </a>
+      </div>
 
       <form class="order-form" id="orderForm">
+        <h3 class="form-section-title">👤 Customer Details</h3>
         <div class="form-row">
           <div class="form-group">
             <label for="customerName">Full Name *</label>
             <input type="text" id="customerName" name="name" required placeholder="Your full name" />
           </div>
           <div class="form-group">
-            <label for="customerPhone">Phone Number *</label>
+            <label for="customerPhone">Phone / WhatsApp Number *</label>
             <input type="tel" id="customerPhone" name="phone" required placeholder="03XX-XXXXXXX" />
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label for="customerCity">City *</label>
-            <input type="text" id="customerCity" name="city" required placeholder="e.g. Karachi, Lahore, Islamabad" />
+            <label for="customerEmail">Email (optional)</label>
+            <input type="email" id="customerEmail" name="email" placeholder="you@example.com" />
           </div>
+          <div class="form-group">
+            <label for="customerCity">City *</label>
+            <input type="text" id="customerCity" name="city" required placeholder="e.g. Karachi, Lahore, Islamabad, Hyderabad" />
+          </div>
+        </div>
+
+        <h3 class="form-section-title">📱 Product Details</h3>
+        <div class="form-row">
           <div class="form-group">
             <label for="mobileModel">Mobile Model *</label>
             <select id="mobileModel" name="model" required>
               <option value="">Select Mobile</option>
-              <option value="Samsung Galaxy A16">Samsung Galaxy A16</option>
-              <option value="Samsung Galaxy A36">Samsung Galaxy A36</option>
-              <option value="Samsung Galaxy S24">Samsung Galaxy S24</option>
-              <option value="Samsung Galaxy A06">Samsung Galaxy A06</option>
-              <option value="Xiaomi Redmi Note 14">Xiaomi Redmi Note 14</option>
-              <option value="Xiaomi 14T">Xiaomi 14T</option>
-              <option value="Infinix Note 40">Infinix Note 40</option>
-              <option value="Infinix Hot 50">Infinix Hot 50</option>
-              <option value="Tecno Spark 30">Tecno Spark 30</option>
-              <option value="Tecno Camon 30">Tecno Camon 30</option>
-              <option value="iPhone 15">iPhone 15</option>
-              <option value="iPhone 16">iPhone 16</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="storageVariant">Storage / RAM Variant *</label>
+            <select id="storageVariant" name="variant" required>
+              <option value="">Select Variant</option>
+              <option value="4GB/64GB">4GB / 64GB</option>
+              <option value="4GB/128GB">4GB / 128GB</option>
+              <option value="6GB/128GB">6GB / 128GB</option>
+              <option value="8GB/128GB">8GB / 128GB</option>
+              <option value="8GB/256GB">8GB / 256GB</option>
+              <option value="12GB/256GB">12GB / 256GB</option>
+              <option value="12GB/512GB">12GB / 512GB</option>
               <option value="Other">Other (write in notes)</option>
             </select>
           </div>
         </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="colorPref">Preferred Color</label>
+            <input type="text" id="colorPref" name="color" placeholder="e.g. Black, Blue, Green, Midnight" />
+          </div>
+          <div class="form-group">
+            <label for="quantity">Quantity *</label>
+            <input type="number" id="quantity" name="quantity" min="1" max="10" value="1" required />
+          </div>
+        </div>
+
+        <h3 class="form-section-title">📍 Delivery & Payment</h3>
         <div class="form-group">
-          <label for="address">Delivery Address *</label>
-          <textarea id="address" name="address" rows="3" required placeholder="Full delivery address"></textarea>
+          <label for="address">Full Delivery Address *</label>
+          <textarea id="address" name="address" rows="3" required placeholder="House/Flat No, Street, Area, Landmark, City"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="paymentMethod">Payment Method *</label>
+            <select id="paymentMethod" name="payment" required>
+              <option value="">Select Payment</option>
+              <option value="COD">Cash on Delivery (COD)</option>
+              <option value="JazzCash">JazzCash</option>
+              <option value="Easypaisa">Easypaisa</option>
+              <option value="Bank Transfer">Bank Transfer</option>
+              <option value="Advance Partial">Advance Partial + COD</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="deliveryPref">Preferred Delivery Time</label>
+            <select id="deliveryPref" name="delivery">
+              <option value="Any">Any time</option>
+              <option value="Morning">Morning (9am–12pm)</option>
+              <option value="Afternoon">Afternoon (12pm–5pm)</option>
+              <option value="Evening">Evening (5pm–9pm)</option>
+            </select>
+          </div>
         </div>
         <div class="form-group">
-          <label for="notes">Additional Notes</label>
-          <textarea id="notes" name="notes" rows="2" placeholder="Color, storage variant, any special request..."></textarea>
+          <label for="notes">Additional Notes / Special Requests</label>
+          <textarea id="notes" name="notes" rows="2" placeholder="Box sealed required, gift wrap, specific charger, PTA status, etc."></textarea>
         </div>
-        <button type="submit" class="btn btn-primary btn-full">Submit Order Request</button>
+
+        <div class="form-check">
+          <input type="checkbox" id="confirmGenuine" name="confirm" required />
+          <label for="confirmGenuine">I confirm I want a 100% genuine PTA-approved mobile with company warranty.</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">🚀 Submit Order Request</button>
+        <p class="form-note">After submit you can also share the same details on WhatsApp for faster confirmation.</p>
       </form>
 
       <div class="order-success" id="orderSuccess" hidden>
         <h3>✅ Order Request Received!</h3>
         <p id="successMessage"></p>
+        <a href="#" id="waOrderLink" class="btn btn-whatsapp" target="_blank" rel="noopener">💬 Confirm on WhatsApp Now</a>
       </div>
     </div>
   </section>
@@ -196,6 +281,9 @@
           <span>Owner & Founder</span>
           <strong>Ahmed Raza Bhutto</strong>
         </div>
+        <div class="owner-wa">
+          <a href="https://wa.me/923318373204" class="btn btn-whatsapp" target="_blank" rel="noopener">💬 WhatsApp: 0331-8373204</a>
+        </div>
       </div>
       <div class="about-image">
         <div class="owner-avatar">ARB</div>
@@ -213,11 +301,13 @@
           <h3>Visit Our Shop</h3>
           <p>Come to our store to see and buy mobiles in person.</p>
         </div>
-        <div class="contact-card">
-          <div class="contact-icon">📞</div>
-          <h3>Call / WhatsApp</h3>
-          <p>For prices & orders</p>
-          <a href="tel:+923001234567" class="contact-link">+92 300 1234567</a>
+        <div class="contact-card highlight-card">
+          <div class="contact-icon">💬</div>
+          <h3>WhatsApp / Call</h3>
+          <p>For prices, stock & orders</p>
+          <a href="https://wa.me/923318373204" class="contact-link" target="_blank" rel="noopener">0331-8373204</a>
+          <br />
+          <a href="tel:+923318373204" class="contact-link">Call Now</a>
         </div>
         <div class="contact-card">
           <div class="contact-icon">✉️</div>
@@ -229,6 +319,11 @@
     </div>
   </section>
 
+  <!-- ========== FLOATING WHATSAPP ========== -->
+  <a href="https://wa.me/923318373204?text=Assalam%20o%20Alaikum%2C%20I%20need%20help%20regarding%20mobiles" class="floating-wa" target="_blank" rel="noopener" title="Chat on WhatsApp">
+    💬
+  </a>
+
   <!-- ========== FOOTER ========== -->
   <footer class="footer">
     <div class="container">
@@ -236,6 +331,7 @@
         <div class="footer-brand">
           <h3>Ahmed Raza Bhutto Mobile Shop</h3>
           <p>Your trusted mobile partner in Pakistan</p>
+          <p class="footer-wa">WhatsApp: <a href="https://wa.me/923318373204">0331-8373204</a></p>
         </div>
         <div class="footer-links">
           <a href="#home">Home</a>
@@ -247,7 +343,7 @@
       </div>
       <div class="footer-bottom">
         <p>© 2026 Ahmed Raza Bhutto Mobile Shop. All rights reserved.</p>
-        <p>Owner: <strong>Ahmed Raza Bhutto</strong></p>
+        <p>Owner: <strong>Ahmed Raza Bhutto</strong> | WhatsApp: <strong>0331-8373204</strong></p>
       </div>
     </div>
   </footer>
