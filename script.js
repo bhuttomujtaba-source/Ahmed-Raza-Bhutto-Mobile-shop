@@ -433,6 +433,54 @@ const products = [
   }
 ];
 
+/* ===== Custom Images (localStorage) ===== */
+const CUSTOM_IMAGES_KEY = "ahmedRazaCustomImages";
+let customImages = {};
+try {
+  customImages = JSON.parse(localStorage.getItem(CUSTOM_IMAGES_KEY) || "{}");
+} catch (e) {
+  customImages = {};
+}
+
+function getProductImage(p) {
+  return customImages[p.id] || p.image;
+}
+
+function saveCustomImage(id, dataUrl) {
+  customImages[id] = dataUrl;
+  try {
+    localStorage.setItem(CUSTOM_IMAGES_KEY, JSON.stringify(customImages));
+  } catch (e) {
+    alert("Storage full! Image too large. Please use a smaller photo (under 1MB).");
+  }
+}
+
+function removeCustomImage(id) {
+  delete customImages[id];
+  localStorage.setItem(CUSTOM_IMAGES_KEY, JSON.stringify(customImages));
+}
+
+/* ===== Admin Mode ===== */
+let isAdminMode = false;
+let logoClickCount = 0;
+let logoClickTimer = null;
+
+function toggleAdminMode(force) {
+  if (typeof force === "boolean") {
+    isAdminMode = force;
+  } else {
+    isAdminMode = !isAdminMode;
+  }
+  document.body.classList.toggle("admin-mode", isAdminMode);
+  if (isAdminMode) {
+    alert("✅ Admin Mode ON\n\nअब हर मोबाइल के नीचे Upload Photo बटन दिखेगा।\nफोटो चुनें → तुरंत बदल जाएगी।\n\nAdmin Mode बंद करने के लिए लोगो पर फिर 5 बार क्लिक करें।");
+  } else {
+    alert("🔒 Admin Mode OFF");
+  }
+  // Re-render to show/hide upload buttons
+  applyFilters();
+}
+
 /* ===== Helpers ===== */
 function formatPrice(num) {
   return "Rs. " + num.toLocaleString("en-PK");
@@ -442,12 +490,25 @@ function createProductCard(p) {
   const badgeClass = p.badge === "Hot" || p.badge === "Best Seller" || p.badge === "Flagship" ? "hot" : "";
   const badgeHtml = p.badge ? `<span class="product-badge ${badgeClass}">${p.badge}</span>` : "";
   const oldPriceHtml = p.oldPrice ? `<span class="price-old">${formatPrice(p.oldPrice)}</span>` : "";
+  const imgSrc = getProductImage(p);
+  const hasCustom = !!customImages[p.id];
+
+  const adminUploadHtml = isAdminMode ? `
+    <div class="admin-upload-box">
+      <label class="btn-upload">
+        📷 Upload Photo
+        <input type="file" accept="image/*" class="product-upload-input" data-id="${p.id}" hidden />
+      </label>
+      ${hasCustom ? `<button type="button" class="btn-reset-img" data-id="${p.id}" title="Reset to original">↺ Reset</button>` : ""}
+      ${hasCustom ? `<span class="custom-badge">✓ Custom</span>` : ""}
+    </div>
+  ` : "";
 
   return `
     <div class="product-card" data-brand="${p.brand}" data-price="${p.price}" data-name="${p.name.toLowerCase()}" data-category="${p.category || 'mobile'}">
       <div class="product-image">
         ${badgeHtml}
-        <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x280/e2e8f0/64748b?text=📱'" />
+        <img src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x280/e2e8f0/64748b?text=📱'" />
       </div>
       <div class="product-info">
         <div class="product-brand">${p.brand === 'accessories' ? 'Accessories' : p.brand}</div>
@@ -462,6 +523,7 @@ function createProductCard(p) {
           <button class="btn-sm btn-order" data-id="${p.id}">Order</button>
           <a href="https://wa.me/923318373204?text=${encodeURIComponent('Assalam o Alaikum, I want to order: ' + p.name + ' (' + formatPrice(p.price) + ')')}" class="btn-sm btn-wa-sm" target="_blank" rel="noopener" title="WhatsApp">💬</a>
         </div>
+        ${adminUploadHtml}
       </div>
     </div>
   `;
@@ -535,9 +597,10 @@ const modalClose = document.getElementById("modalClose");
 
 function openModal(product) {
   const d = product.details;
+  const imgSrc = getProductImage(product);
   modalBody.innerHTML = `
     <div class="modal-image">
-      <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/200x280/e2e8f0/64748b?text=📱'" />
+      <img src="${imgSrc}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/200x280/e2e8f0/64748b?text=📱'" />
     </div>
     <div class="modal-brand">${product.brand === 'accessories' ? 'Accessories / Electronics' : product.brand}</div>
     <h3 class="modal-name">${product.name}</h3>
@@ -593,6 +656,37 @@ function attachCardEvents() {
       if (p) {
         modelSelect.value = p.name;
         document.getElementById("order").scrollIntoView({ behavior: "smooth" });
+      }
+    });
+  });
+
+  // Upload photo handlers (admin)
+  document.querySelectorAll(".product-upload-input").forEach(input => {
+    input.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (file.size > 1.5 * 1024 * 1024) {
+        alert("फोटो बहुत बड़ी है! कृपया 1.5MB से छोटी फोटो चुनें।");
+        return;
+      }
+      const id = Number(input.dataset.id);
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        saveCustomImage(id, ev.target.result);
+        applyFilters(); // re-render with new image
+        alert("✅ फोटो सफलतापूर्वक अपलोड हो गई!\nअब कस्टमर को यही फोटो दिखेगी।");
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // Reset custom image
+  document.querySelectorAll(".btn-reset-img").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = Number(btn.dataset.id);
+      if (confirm("क्या आप मूल फोटो पर वापस जाना चाहते हैं?")) {
+        removeCustomImage(id);
+        applyFilters();
       }
     });
   });
@@ -662,6 +756,35 @@ if (menuToggle && nav) {
   });
 }
 
+/* ===== Admin Mode Toggle (click logo 5 times) ===== */
+function setupAdminToggle() {
+  const logo = document.querySelector(".logo");
+  if (!logo) return;
+  logo.style.cursor = "pointer";
+  logo.title = "Click 5 times for Admin Mode";
+  logo.addEventListener("click", (e) => {
+    logoClickCount++;
+    if (logoClickTimer) clearTimeout(logoClickTimer);
+    logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 2000);
+    if (logoClickCount >= 5) {
+      logoClickCount = 0;
+      if (isAdminMode) {
+        // turning OFF – no password needed
+        toggleAdminMode(false);
+      } else {
+        // turning ON – ask password
+        const pass = prompt("Admin Password डालें:\n(पासवर्ड: ahmed123)");
+        if (pass === "ahmed123") {
+          toggleAdminMode(true);
+        } else if (pass !== null) {
+          alert("❌ गलत पासवर्ड!");
+        }
+      }
+    }
+  });
+}
+
 /* ===== Init ===== */
 populateModelSelect();
 renderProducts(products);
+setupAdminToggle();
