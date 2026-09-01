@@ -433,54 +433,6 @@ const products = [
   }
 ];
 
-/* ===== Custom Images (localStorage) ===== */
-const CUSTOM_IMAGES_KEY = "ahmedRazaCustomImages";
-let customImages = {};
-try {
-  customImages = JSON.parse(localStorage.getItem(CUSTOM_IMAGES_KEY) || "{}");
-} catch (e) {
-  customImages = {};
-}
-
-function getProductImage(p) {
-  return customImages[p.id] || p.image;
-}
-
-function saveCustomImage(id, dataUrl) {
-  customImages[id] = dataUrl;
-  try {
-    localStorage.setItem(CUSTOM_IMAGES_KEY, JSON.stringify(customImages));
-  } catch (e) {
-    alert("Storage full! Image too large. Please use a smaller photo (under 1MB).");
-  }
-}
-
-function removeCustomImage(id) {
-  delete customImages[id];
-  localStorage.setItem(CUSTOM_IMAGES_KEY, JSON.stringify(customImages));
-}
-
-/* ===== Admin Mode ===== */
-let isAdminMode = false;
-let logoClickCount = 0;
-let logoClickTimer = null;
-
-function toggleAdminMode(force) {
-  if (typeof force === "boolean") {
-    isAdminMode = force;
-  } else {
-    isAdminMode = !isAdminMode;
-  }
-  document.body.classList.toggle("admin-mode", isAdminMode);
-  if (isAdminMode) {
-    alert("✅ Admin Mode ON\n\nअब हर मोबाइल के नीचे Upload Photo बटन दिखेगा।\nफोटो चुनें → तुरंत बदल जाएगी।\n\nAdmin Mode बंद करने के लिए लोगो पर फिर 5 बार क्लिक करें।");
-  } else {
-    alert("🔒 Admin Mode OFF");
-  }
-  // Re-render to show/hide upload buttons
-  applyFilters();
-}
-
 /* ===== Helpers ===== */
 function formatPrice(num) {
   return "Rs. " + num.toLocaleString("en-PK");
@@ -490,25 +442,12 @@ function createProductCard(p) {
   const badgeClass = p.badge === "Hot" || p.badge === "Best Seller" || p.badge === "Flagship" ? "hot" : "";
   const badgeHtml = p.badge ? `<span class="product-badge ${badgeClass}">${p.badge}</span>` : "";
   const oldPriceHtml = p.oldPrice ? `<span class="price-old">${formatPrice(p.oldPrice)}</span>` : "";
-  const imgSrc = getProductImage(p);
-  const hasCustom = !!customImages[p.id];
-
-  const adminUploadHtml = isAdminMode ? `
-    <div class="admin-upload-box">
-      <label class="btn-upload">
-        📷 Upload Photo
-        <input type="file" accept="image/*" class="product-upload-input" data-id="${p.id}" hidden />
-      </label>
-      ${hasCustom ? `<button type="button" class="btn-reset-img" data-id="${p.id}" title="Reset to original">↺ Reset</button>` : ""}
-      ${hasCustom ? `<span class="custom-badge">✓ Custom</span>` : ""}
-    </div>
-  ` : "";
 
   return `
     <div class="product-card" data-brand="${p.brand}" data-price="${p.price}" data-name="${p.name.toLowerCase()}" data-category="${p.category || 'mobile'}">
       <div class="product-image">
         ${badgeHtml}
-        <img src="${imgSrc}" alt="${p.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x280/e2e8f0/64748b?text=📱'" />
+        <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='https://via.placeholder.com/200x280/e2e8f0/64748b?text=📱'" />
       </div>
       <div class="product-info">
         <div class="product-brand">${p.brand === 'accessories' ? 'Accessories' : p.brand}</div>
@@ -523,7 +462,13 @@ function createProductCard(p) {
           <button class="btn-sm btn-order" data-id="${p.id}">Order</button>
           <a href="https://wa.me/923318373204?text=${encodeURIComponent('Assalam o Alaikum, I want to order: ' + p.name + ' (' + formatPrice(p.price) + ')')}" class="btn-sm btn-wa-sm" target="_blank" rel="noopener" title="WhatsApp">💬</a>
         </div>
-        ${adminUploadHtml}
+        <div class="product-community">
+          <div class="product-thumbs" data-thumbs-for="${p.id}"></div>
+          <label class="btn-upload-sm">
+            📷 Upload your photo
+            <input type="file" accept="image/*" hidden data-upload-for="${p.id}" />
+          </label>
+        </div>
       </div>
     </div>
   `;
@@ -540,6 +485,8 @@ function renderProducts(list) {
   }
   grid.innerHTML = list.map(createProductCard).join("");
   attachCardEvents();
+  attachProductUploads();
+  renderProductThumbs();
 }
 
 function populateModelSelect() {
@@ -597,10 +544,9 @@ const modalClose = document.getElementById("modalClose");
 
 function openModal(product) {
   const d = product.details;
-  const imgSrc = getProductImage(product);
   modalBody.innerHTML = `
     <div class="modal-image">
-      <img src="${imgSrc}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/200x280/e2e8f0/64748b?text=📱'" />
+      <img src="${product.image}" alt="${product.name}" onerror="this.src='https://via.placeholder.com/200x280/e2e8f0/64748b?text=📱'" />
     </div>
     <div class="modal-brand">${product.brand === 'accessories' ? 'Accessories / Electronics' : product.brand}</div>
     <h3 class="modal-name">${product.name}</h3>
@@ -656,37 +602,6 @@ function attachCardEvents() {
       if (p) {
         modelSelect.value = p.name;
         document.getElementById("order").scrollIntoView({ behavior: "smooth" });
-      }
-    });
-  });
-
-  // Upload photo handlers (admin)
-  document.querySelectorAll(".product-upload-input").forEach(input => {
-    input.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      if (file.size > 1.5 * 1024 * 1024) {
-        alert("फोटो बहुत बड़ी है! कृपया 1.5MB से छोटी फोटो चुनें।");
-        return;
-      }
-      const id = Number(input.dataset.id);
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        saveCustomImage(id, ev.target.result);
-        applyFilters(); // re-render with new image
-        alert("✅ फोटो सफलतापूर्वक अपलोड हो गई!\nअब कस्टमर को यही फोटो दिखेगी।");
-      };
-      reader.readAsDataURL(file);
-    });
-  });
-
-  // Reset custom image
-  document.querySelectorAll(".btn-reset-img").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const id = Number(btn.dataset.id);
-      if (confirm("क्या आप मूल फोटो पर वापस जाना चाहते हैं?")) {
-        removeCustomImage(id);
-        applyFilters();
       }
     });
   });
@@ -756,35 +671,248 @@ if (menuToggle && nav) {
   });
 }
 
-/* ===== Admin Mode Toggle (click logo 5 times) ===== */
-function setupAdminToggle() {
-  const logo = document.querySelector(".logo");
-  if (!logo) return;
-  logo.style.cursor = "pointer";
-  logo.title = "Click 5 times for Admin Mode";
-  logo.addEventListener("click", (e) => {
-    logoClickCount++;
-    if (logoClickTimer) clearTimeout(logoClickTimer);
-    logoClickTimer = setTimeout(() => { logoClickCount = 0; }, 2000);
-    if (logoClickCount >= 5) {
-      logoClickCount = 0;
-      if (isAdminMode) {
-        // turning OFF – no password needed
-        toggleAdminMode(false);
-      } else {
-        // turning ON – ask password
-        const pass = prompt("Admin Password डालें:\n(पासवर्ड: ahmed123)");
-        if (pass === "ahmed123") {
-          toggleAdminMode(true);
-        } else if (pass !== null) {
-          alert("❌ गलत पासवर्ड!");
-        }
+/* ===== Community Photo Uploads (public on this site/device) ===== */
+const COMMUNITY_KEY = "arm_community_photos_v1";
+let communityFilter = "all";
+
+function loadCommunity() {
+  try {
+    return JSON.parse(localStorage.getItem(COMMUNITY_KEY) || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function saveCommunity(list) {
+  localStorage.setItem(COMMUNITY_KEY, JSON.stringify(list));
+}
+
+function compressImage(file, maxW = 900, quality = 0.72) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Read failed"));
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxW / img.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(img.width * scale);
+        canvas.height = Math.round(img.height * scale);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = () => reject(new Error("Image failed"));
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function addCommunityPhoto({ productId, productName, category, name, caption, dataUrl }) {
+  const list = loadCommunity();
+  list.unshift({
+    id: Date.now() + "_" + Math.random().toString(36).slice(2, 7),
+    productId: productId || "",
+    productName: productName || "General item",
+    category: category || "mobile",
+    name: name || "Friend",
+    caption: caption || "",
+    dataUrl,
+    createdAt: new Date().toISOString()
+  });
+  saveCommunity(list.slice(0, 80));
+  renderCommunityGrid();
+  renderProductThumbs();
+}
+
+function renderProductThumbs() {
+  const list = loadCommunity();
+  document.querySelectorAll("[data-thumbs-for]").forEach(wrap => {
+    const pid = wrap.getAttribute("data-thumbs-for");
+    const photos = list.filter(p => String(p.productId) === String(pid)).slice(0, 6);
+    wrap.innerHTML = photos.map(p =>
+      `<img src="${p.dataUrl}" alt="${p.productName}" title="${p.name}" data-full="${p.id}" />`
+    ).join("");
+    wrap.querySelectorAll("img").forEach(img => {
+      img.addEventListener("click", () => openLightbox(img.src));
+    });
+  });
+}
+
+function renderCommunityGrid() {
+  const gridEl = document.getElementById("communityGrid");
+  if (!gridEl) return;
+  let list = loadCommunity();
+  if (communityFilter === "mobile") list = list.filter(p => p.category !== "electronics");
+  if (communityFilter === "electronics") list = list.filter(p => p.category === "electronics");
+  if (!list.length) {
+    gridEl.innerHTML = `<p class="community-empty">Abhi koi photo nahi hai. Pehli photo aap upload karein — friends ko bhi dikhegi.</p>`;
+    return;
+  }
+  gridEl.innerHTML = list.map(p => `
+    <article class="community-card">
+      <img src="${p.dataUrl}" alt="${p.productName}" data-full="${p.id}" />
+      <div class="community-card-body">
+        <strong>${p.productName}</strong>
+        <span>By ${p.name}${p.caption ? " · " + p.caption : ""}</span>
+      </div>
+    </article>
+  `).join("");
+  gridEl.querySelectorAll("img").forEach(img => {
+    img.addEventListener("click", () => openLightbox(img.src));
+  });
+}
+
+function attachProductUploads() {
+  document.querySelectorAll("input[data-upload-for]").forEach(input => {
+    input.addEventListener("change", async () => {
+      const file = input.files && input.files[0];
+      input.value = "";
+      if (!file) return;
+      if (!file.type.startsWith("image/")) {
+        alert("Sirf photo / image file upload karein.");
+        return;
       }
+      const product = products.find(x => x.id === Number(input.getAttribute("data-upload-for")));
+      const name = prompt("Aapka naam? (ye photo ke sath dikhega)", localStorage.getItem("arm_uploader_name") || "") || "Friend";
+      localStorage.setItem("arm_uploader_name", name);
+      const caption = prompt("Short caption (optional):", "") || "";
+      try {
+        const dataUrl = await compressImage(file);
+        addCommunityPhoto({
+          productId: product ? product.id : "",
+          productName: product ? product.name : "General item",
+          category: product ? (product.category || "mobile") : "mobile",
+          name,
+          caption,
+          dataUrl
+        });
+        alert("Photo upload ho gayi! Community Photos section mein bhi dekh sakte hain.");
+      } catch (err) {
+        alert("Photo upload nahi ho saki. Chhoti image try karein.");
+      }
+    });
+  });
+}
+
+function populateUploadSelect() {
+  const sel = document.getElementById("uploadProductSelect");
+  if (!sel) return;
+  const opts = products.map(p => `<option value="${p.id}">${p.name}</option>`).join("");
+  sel.innerHTML = `<option value="">General / Any item</option>${opts}`;
+}
+
+const communityFileInput = document.getElementById("communityFileInput");
+if (communityFileInput) {
+  communityFileInput.addEventListener("change", async () => {
+    const file = communityFileInput.files && communityFileInput.files[0];
+    communityFileInput.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Sirf photo / image file upload karein.");
+      return;
+    }
+    const name = (document.getElementById("uploaderName")?.value || "").trim() || "Friend";
+    localStorage.setItem("arm_uploader_name", name);
+    const caption = (document.getElementById("uploadCaption")?.value || "").trim();
+    const pid = document.getElementById("uploadProductSelect")?.value || "";
+    const product = products.find(x => String(x.id) === String(pid));
+    try {
+      const dataUrl = await compressImage(file);
+      addCommunityPhoto({
+        productId: product ? product.id : "",
+        productName: product ? product.name : "General / Electric item",
+        category: product ? (product.category || "mobile") : "electronics",
+        name,
+        caption,
+        dataUrl
+      });
+      document.getElementById("community").scrollIntoView({ behavior: "smooth" });
+    } catch {
+      alert("Photo upload nahi ho saki. Chhoti image try karein.");
+    }
+  });
+}
+
+document.querySelectorAll("[data-comm]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("[data-comm]").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    communityFilter = btn.getAttribute("data-comm");
+    renderCommunityGrid();
+  });
+});
+
+const lightbox = document.getElementById("lightbox");
+const lightboxImg = document.getElementById("lightboxImg");
+const lightboxClose = document.getElementById("lightboxClose");
+
+function openLightbox(src) {
+  if (!lightbox || !lightboxImg) return;
+  lightboxImg.src = src;
+  lightbox.hidden = false;
+}
+
+function closeLightbox() {
+  if (!lightbox) return;
+  lightbox.hidden = true;
+  if (lightboxImg) lightboxImg.src = "";
+}
+
+if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
+if (lightbox) {
+  lightbox.addEventListener("click", (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+}
+
+const exportBtn = document.getElementById("exportCommunity");
+if (exportBtn) {
+  exportBtn.addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(loadCommunity())], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "community-photos.json";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+}
+
+const importInput = document.getElementById("importCommunity");
+if (importInput) {
+  importInput.addEventListener("change", async () => {
+    const file = importInput.files && importInput.files[0];
+    importInput.value = "";
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const incoming = JSON.parse(text);
+      if (!Array.isArray(incoming)) throw new Error("Invalid");
+      const existing = loadCommunity();
+      const merged = [...incoming, ...existing];
+      const seen = new Set();
+      const unique = merged.filter(p => {
+        const key = p.id || (p.dataUrl || "").slice(-40);
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+      saveCommunity(unique.slice(0, 80));
+      renderCommunityGrid();
+      renderProductThumbs();
+      alert("Friends ki photos import ho gayi!");
+    } catch {
+      alert("Import file valid nahi hai.");
     }
   });
 }
 
 /* ===== Init ===== */
 populateModelSelect();
+populateUploadSelect();
 renderProducts(products);
-setupAdminToggle();
+renderCommunityGrid();
+if (document.getElementById("uploaderName") && localStorage.getItem("arm_uploader_name")) {
+  document.getElementById("uploaderName").value = localStorage.getItem("arm_uploader_name");
+}

@@ -24,7 +24,8 @@
       </a>
       <nav class="nav" id="nav">
         <a href="#home">Home</a>
-        <a href="#products">Mobiles</a>
+        <a href="#products">Products</a>
+        <a href="#community">Community Photos</a>
         <a href="#facilities">Facilities</a>
         <a href="#order">Online Order</a>
         <a href="#about">About Owner</a>
@@ -112,8 +113,8 @@
   <!-- ========== PRODUCTS ========== -->
   <section class="products" id="products">
     <div class="container">
-      <h2 class="section-title">Our Mobiles</h2>
-      <p class="section-subtitle">Latest smartphones with photos, specs & realistic Pakistani prices</p>
+      <h2 class="section-title">Our Products</h2>
+      <p class="section-subtitle">Latest smartphones, Google Pixel, iPhone, electronics & accessories — realistic Pakistani prices. Har product ke neeche apni photo upload karein.</p>
 
       <div class="search-bar-wrap">
         <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search mobile by name, brand or price..." />
@@ -127,13 +128,61 @@
         <button class="filter-btn" data-filter="tecno">Tecno</button>
         <button class="filter-btn" data-filter="iphone">iPhone</button>
         <button class="filter-btn" data-filter="pixel">Pixel</button>
+        <button class="filter-btn" data-filter="electronics">Electronics</button>
         <button class="filter-btn" data-filter="budget">Under 50k</button>
-        <button class="filter-btn" data-filter="electronics">Accessories</button>
       </div>
 
       <div class="products-grid" id="productsGrid">
         <!-- Injected by JavaScript -->
       </div>
+    </div>
+  </section>
+
+  <!-- ========== COMMUNITY PHOTOS ========== -->
+  <section class="community" id="community">
+    <div class="container">
+      <h2 class="section-title">Community Photos</h2>
+      <p class="section-subtitle">Dost apne mobile ya electronic item ki photo yahan upload karein. Jo bhi visit karega woh photos dekh sakta hai aur apni photo bhi laga sakta hai.</p>
+
+      <div class="community-upload-box">
+        <h3>📷 Apni photo publicly upload karein</h3>
+        <p class="community-hint">Mobile, charger, earbuds, camera gear — jo bhi aapke paas ho. Photo sab visitors ko dikhegi.</p>
+        <div class="community-form-row">
+          <div class="form-group">
+            <label for="uploaderName">Aapka naam *</label>
+            <input type="text" id="uploaderName" placeholder="e.g. Ali, Ahmed, Sara" />
+          </div>
+          <div class="form-group">
+            <label for="uploadProductSelect">Kis product ki photo hai?</label>
+            <select id="uploadProductSelect">
+              <option value="">General / Any item</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="uploadCaption">Caption (optional)</label>
+          <input type="text" id="uploadCaption" placeholder="e.g. Meri Redmi Note 14 — 6 months use" />
+        </div>
+        <label class="btn btn-primary btn-upload-main">
+          📁 Choose Photo & Upload
+          <input type="file" id="communityFileInput" accept="image/*" hidden />
+        </label>
+        <p class="form-note">Photo compress ho kar is website par save hoti hai. Same computer/phone ke browser par sab visitors ko dikhegi. Dusre phone par dikhane ke liye neeche Export/Import use karein.</p>
+        <div class="hero-buttons" style="justify-content:center;margin-top:12px;">
+          <button type="button" class="btn btn-outline" id="exportCommunity" style="color:#0f766e;border-color:#0f766e;">Export Photos</button>
+          <label class="btn btn-outline" style="color:#0f766e;border-color:#0f766e;cursor:pointer;">
+            Import Friends' Photos
+            <input type="file" id="importCommunity" accept="application/json" hidden />
+          </label>
+        </div>
+      </div>
+
+      <div class="community-toolbar">
+        <button type="button" class="filter-btn active" data-comm="all">All Photos</button>
+        <button type="button" class="filter-btn" data-comm="mobile">Mobiles</button>
+        <button type="button" class="filter-btn" data-comm="electronics">Electronics</button>
+      </div>
+      <div class="community-grid" id="communityGrid"></div>
     </div>
   </section>
 
@@ -322,6 +371,12 @@
     </div>
   </section>
 
+  <!-- ========== LIGHTBOX ========== -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+    <img id="lightboxImg" alt="Uploaded photo" />
+  </div>
+
   <!-- ========== FLOATING WHATSAPP ========== -->
   <a href="https://wa.me/923318373204?text=Assalam%20o%20Alaikum%2C%20I%20need%20help%20regarding%20mobiles" class="floating-wa" target="_blank" rel="noopener" title="Chat on WhatsApp">
     💬
@@ -338,7 +393,8 @@
         </div>
         <div class="footer-links">
           <a href="#home">Home</a>
-          <a href="#products">Mobiles</a>
+          <a href="#products">Products</a>
+          <a href="#community">Community</a>
           <a href="#order">Online Order</a>
           <a href="#about">About</a>
           <a href="#contact">Contact</a>
